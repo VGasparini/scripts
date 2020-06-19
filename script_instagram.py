@@ -1,9 +1,11 @@
 from selenium import webdriver
 from time import sleep
-from random import randint
+from random import randint, choices
+from itertools import permutations
 
 
 def post(cont, comment_text, target_url, param1=10, param2=5):
+    global comments_list
     for j in range(param1):
         browser.get(target_url)
         sleep(5)
@@ -13,6 +15,9 @@ def post(cont, comment_text, target_url, param1=10, param2=5):
             comment_field.click()
             sleep(randint(10, 100)/100)
 
+            comment = choices(comments_list)
+            comment_text = '{} {} {}'.format(
+                *comment)  # create a comment message
             comment_field = browser.find_element_by_class_name(class_name)
             comment_field.send_keys(comment_text)
             sleep(randint(10, 100)/100)
@@ -35,7 +40,10 @@ target_url = 'https://www.instagram.com/'  # set target photo url
 
 username = ''  # set your username
 secret = ''  # set your secret
-comment_text = ''  # set your comment message
+users_to_tag = ['@zezinha', '@pedrinho']  # set users to tag in comment
+users_per_comment = 3  # set number of users per comment
+
+comments_list = list(permutations(users_to_tag, users_per_comment))
 
 '''set your comments limit, it'll multiplied by 50 (default).
 You can change passing as param1 and param2 on call post function'''
